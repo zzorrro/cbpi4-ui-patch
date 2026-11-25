@@ -64,7 +64,7 @@ def apply_patches(s, Z):
 
     # ---------- 1. Кнопка Actor: фиксированная ширина группы ----------
     rep('(0,s.jsxs)(Zt.A,{children:[', '(0,s.jsxs)(GRP,{fullWidth:!0,pm:PMP,children:[', 4)
-    EXTRA = 'fontVariantNumeric:"tabular-nums",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"'
+    EXTRA = 'textAlign:"center",fontVariantNumeric:"tabular-nums",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"'
     rep('{fontSize:h.props.size+"px",fontWeight:h.props.fontweight||"normal"}',
         '{fontSize:h.props.size+"px",fontWeight:h.props.fontweight||"normal",' + EXTRA + '}')
     rep('{fontSize:"12px",fontWeight:"normal"}',
@@ -175,6 +175,16 @@ def apply_patches(s, Z):
     rep('},[null===(r=h.props)||void 0===r?void 0:r.actor,null===(n=h.props)||void 0===n?void 0:n.size,',
         '},[h.props&&h.props.plusminus,h.props&&h.props.step,null===(r=h.props)||void 0===r?void 0:r.actor,null===(n=h.props)||void 0===n?void 0:n.size,')
 
+
+    # ---------- 1в. Ширина блока не зависит от числа в скобках ----------
+    # Если у элемента на дашборде не задана ширина (width), блок кнопок раньше сжимался
+    # вместе с текстом. Невидимая "запасная" строка с самым длинным значением (100 %
+    # или максимум Output) держит ширину постоянной при любой мощности.
+    if Z["reserve_label_width"]:
+        rep('children:[" ",l()," (",k,") "]',
+            'children:[" ",l()," (",k,") ",(0,s.jsx)("span",{key:"sz","aria-hidden":!0,'
+            'style:{display:"block",height:0,overflow:"hidden",visibility:"hidden"},'
+            'children:" "+l()+" ("+("Output"===v&&f?f.maxoutput+" / "+f.maxoutput:"100 %")+") "})]', 4)
 
     return MARK + "\n" + s
 

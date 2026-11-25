@@ -25,8 +25,25 @@ for f in patch_ui.py settings_default.py; do
   mv "$INSTALL_DIR/$f.new" "$INSTALL_DIR/$f"
 done
 # Ваши настройки не перезаписываются при обновлении
+# settings.py создаётся пустым (только ваши изменения), поэтому новые значения по умолчанию
+# из settings_default.py при обновлении патча подхватываются автоматически
 if [ ! -f "$INSTALL_DIR/settings.py" ]; then
-  cp "$INSTALL_DIR/settings_default.py" "$INSTALL_DIR/settings.py"
+  cat > "$INSTALL_DIR/settings.py" <<'EOS'
+# -*- coding: utf-8 -*-
+# Ваши настройки патча CraftBeerPi4. Здесь указываются ТОЛЬКО те параметры, которые вы меняете.
+# Все остальные берутся из settings_default.py (там же описание каждого параметра):
+#     cat /opt/cbpi4-ui-patch/settings_default.py
+#
+# Как изменить параметр: добавьте его строку внутрь SIZES ниже, например:
+#     "pm_button_width_pct": 18,
+#     "hide_actions_button": False,
+# (после каждой строки запятая). Этот файл не перезаписывается при обновлении патча.
+#
+# После изменения выполните:  sudo cbpi4-ui-patch apply   и обновите страницу (Ctrl+F5).
+
+SIZES = {
+}
+EOS
 fi
 cat > "$BIN" <<EOF
 #!/bin/sh
