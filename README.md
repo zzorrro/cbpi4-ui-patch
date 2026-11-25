@@ -2,7 +2,7 @@
 
 Патч интерфейса CraftBeerPi4 (пакет `cbpi4gui` 0.5.0, файл `main.65b608fc.js`): стабильная ширина кнопок Actor, кнопки +/-, крупное окно мощности и уведомления, настраиваемые размеры. Цвета и шрифты настраиваются отдельно, плагином [cbpi4-UITheme](https://github.com/zzorrro/cbpi4-UITheme) (Settings, вкладка UI Theme).
 
-## Установка (любой пользователь Pi)
+## Установка
 
     curl -fsSL https://raw.githubusercontent.com/zzorrro/cbpi4-ui-patch/main/install.sh | sudo bash
 
