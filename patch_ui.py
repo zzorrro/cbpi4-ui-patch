@@ -176,6 +176,35 @@ def apply_patches(s, Z):
         '},[h.props&&h.props.plusminus,h.props&&h.props.step,null===(r=h.props)||void 0===r?void 0:r.actor,null===(n=h.props)||void 0===n?void 0:n.size,')
 
 
+    # ---------- 6. Окно этапа (открывается нажатием на этап в списке Steps) ----------
+    # Окно этапов варки и этапов ферментера. Размеры меняются в settings.py (step_dlg_*).
+    _sd = ('sx:{"& .MuiDialog-paper":{width:"min(%s,96vw)",maxWidth:"96vw"},'
+           '"& .MuiTypography-h4":{fontSize:"%s"},'
+           '"& .MuiTypography-h6":{fontSize:"%s"},'
+           '"& .MuiTypography-caption":{fontSize:"%s"},'
+           '"& .MuiGrid-root > .MuiGrid-root":{fontSize:"%s"},'
+           '"& .MuiButtonGroup-root .MuiButton-root":{fontSize:"%s",py:%s},'
+           '"& .MuiButton-startIcon > *":{fontSize:"1.4em !important"},'
+           '"& .MuiDialogActions-root .MuiButton-root":{fontSize:"%s",px:%s,py:%s}},'
+           % (px(Z["step_dlg_width_px"]), rem(Z["step_dlg_title_rem"]), rem(Z["step_dlg_head_rem"]),
+              rem(Z["step_dlg_label_rem"]), rem(Z["step_dlg_value_rem"]),
+              rem(Z["step_dlg_action_btn_rem"]), Z["step_dlg_action_btn_pad_y"],
+              rem(Z["step_dlg_close_btn_rem"]), Z["step_dlg_close_btn_pad_x"], Z["step_dlg_close_btn_pad_y"]))
+    rep('(0,s.jsxs)(et.A,{fullWidth:!0,onClose:h,"aria-labelledby":"simple-dialog-title",open:i,children:[(0,s.jsxs)(rt.A,{children:[(0,s.jsxs)(Ir.A,{className:',
+        '(0,s.jsxs)(et.A,{fullWidth:!0,' + _sd + 'onClose:h,"aria-labelledby":"simple-dialog-title",open:i,children:[(0,s.jsxs)(rt.A,{children:[(0,s.jsxs)(Ir.A,{className:', 2)
+    # Окно с параметрами действия этапа (если у действия есть параметры): ширина, заголовок и кнопки
+    _sa = ('sx:{"& .MuiDialog-paper":{width:"min(%s,96vw)",maxWidth:"96vw"},'
+           '"& .MuiDialogTitle-root":{fontSize:"%s"},'
+           '"& .MuiDialogActions-root .MuiButton-root":{fontSize:"%s",px:%s,py:%s}},'
+           % (px(Z["step_dlg_width_px"]), rem(Z["step_dlg_title_rem"]),
+              rem(Z["step_dlg_close_btn_rem"]), Z["step_dlg_close_btn_pad_x"], Z["step_dlg_close_btn_pad_y"]))
+    _ap_old = ('(0,s.jsxs)(et.A,{open:i,fullWidth:!0,children:[(0,s.jsx)(tt.A,{id:"simple-dialog-title",children:t.label}),'
+               '(0,s.jsx)(rt.A,{children:(0,s.jsx)(nt.A,{id:"alert-dialog-description",children:(0,s.jsx)(Yt.A,{container:!0,spacing:3,'
+               'children:(0,s.jsx)($t.A,{config:t.parameters,onChange:(e,t)=>{c((0,n.A)((0,n.A)({},l),{},{[e]:t}))},props:l})})})}),'
+               '(0,s.jsxs)(Gt.A,{children:[(0,s.jsx)(Xt.A,{onClick:a,variant:"contained",color:"secondary",autoFocus:!0,children:"Close"}),'
+               '(0,s.jsx)(Xt.A,{onClick:()=>o(l),variant:"contained",color:"Primary"')
+    rep(_ap_old, _ap_old.replace('fullWidth:!0,children:', 'fullWidth:!0,' + _sa + 'children:', 1), 2)
+
     # ---------- 1в. Ширина блока не зависит от числа в скобках ----------
     # Если у элемента на дашборде не задана ширина (width), блок кнопок раньше сжимался
     # вместе с текстом. Невидимая "запасная" строка с самым длинным значением (100 %
