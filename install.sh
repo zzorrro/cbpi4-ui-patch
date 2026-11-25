@@ -41,5 +41,5 @@ if [ -z "$NO_APPLY" ]; then
   "$BIN" apply
 fi
 if [ -n "$WITH_THEME" ]; then
-  curl -fsSL "${THEME_INSTALL_URL:-https://raw.githubusercontent.com/zzorrro/cbpi4_UITheme/main/install.sh}" | bash
+  curl -fsSL "${THEME_INSTALL_URL:-https://raw.githubusercontent.com/zzorrro/cbpi4-UITheme/main/install.sh}" | bash
 fi

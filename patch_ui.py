@@ -153,6 +153,21 @@ def apply_patches(s, Z):
         'variant:"outlined",style:S,sx:A,children:"+"})]})},[]);'
         'return(0,d.useMemo)(()=>{var e;const PMP={on:"yes"===(h.props&&h.props.plusminus),dis:p||!f,'
         'dec:()=>PMA(-1),inc:()=>PMA(1)};let t={width:h.width')
+    # ---------- 1б. Кнопки молнии (Set Power) и трёх точек (Actions): узкие, как в оригинале ----------
+    _w = '%s%%' % Z["side_button_width_pct"]
+    _sb = 'style:{minWidth:0,width:"%s",flex:"0 0 %s",padding:0},' % (_w, _w)
+    rep('onClick:L,color:"primary",startIcon:(0,s.jsx)(er,{}),size:"small",',
+        'onClick:L,color:"primary",startIcon:(0,s.jsx)(er,{}),size:"small",' + _sb +
+        'sx:{"& .MuiButton-startIcon":{m:0},"& .MuiButton-startIcon > *":{fontSize:(+(h.props.size)||12)*%s+"px !important"}},' % Z["icon_size_ratio"], 2)
+    _dots = '(0,s.jsx)(i.A,{title:"Actions",children:(0,s.jsx)(Xt.A,{disabled:p,onClick:E,color:"primary",size:"small",'
+    if Z["hide_actions_button"]:
+        # убираем кнопку с тремя точками целиком (null в списке детей ButtonGroup игнорируется)
+        s, n = re.subn(re.escape(_dots) + r'"aria-label":"select merge strategy","aria-haspopup":"menu",children:\(0,s\.jsx\)\(Kt,\{\}\)\}\)\}\)', 'null', s)
+        if n != 3:
+            fail(f"ожидалось 3 вхождений кнопки Actions, найдено {n}")
+    else:
+        rep(_dots, _dots + _sb + 'sx:{"& svg":{fontSize:(+(h.props.size)||12)*%s+"px"}},' % Z["icon_size_ratio"], 3)
+
     rep('(0,s.jsx)("div",{style:t,children:(0,s.jsx)(Xt.A,{disabled:p,onClick:o,fullWidth:!0,variant:n,color:r,children:(0,s.jsxs)("div",{style:M(),children:[" ",l()," "]})})})',
         '(0,s.jsx)("div",{style:t,children:(0,s.jsx)(GRP,{fullWidth:!0,bare:!0,pm:PMP,children:(0,s.jsx)(Xt.A,{disabled:p,onClick:o,fullWidth:!0,variant:n,color:r,children:(0,s.jsxs)("div",{style:M(),children:[" ",l()," "]})})})})')
     rep('(0,s.jsxs)("div",{style:t,children:[(0,s.jsx)(i.A,{title:f?f.name:"",children:(0,s.jsx)(Xt.A,{disabled:p,onClick:o,fullWidth:!0,variant:n,color:r,children:(0,s.jsxs)("div",{style:M(),children:[" ",l()," (",k,") "]})})}),(0,s.jsx)(Ar,',
