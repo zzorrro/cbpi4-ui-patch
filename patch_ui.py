@@ -15,27 +15,29 @@ import os, re, sys, glob, shutil, runpy, subprocess, argparse
 
 HERE = os.path.dirname(os.path.realpath(__file__))
 MARK = "/* cbpi4-ui-patch applied */"
-HEX = r'#[0-9a-fA-F]{3,8}'
 
 
 # ---------------------------------------------------------------- настройки
 def load_settings():
     base = runpy.run_path(os.path.join(HERE, "settings_default.py"))
-    colors, sizes, fonts = dict(base["COLORS"]), dict(base["SIZES"]), dict(base["FONTS"])
+    sizes = dict(base["SIZES"])
     user_file = os.path.join(HERE, "settings.py")
     if os.path.exists(user_file):
         user = runpy.run_path(user_file)
-        for name, target in (("COLORS", colors), ("SIZES", sizes), ("FONTS", fonts)):
-            for k, v in user.get(name, {}).items():
-                if k not in target:
-                    print(f"Предупреждение: неизвестный параметр {name}[{k!r}] в settings.py, пропущен")
-                else:
-                    target[k] = v
-    return colors, sizes, fonts
+        for name in ("COLORS", "FONTS"):
+            if name in user:
+                print(f"Внимание: {name} в settings.py больше не используется. Цвета и шрифты теперь "
+                      "настраиваются в Settings CraftBeerPi4 (плагин cbpi4-UITheme), вкладка UI Theme.")
+        for k, v in user.get("SIZES", {}).items():
+            if k not in sizes:
+                print(f"Предупреждение: неизвестный параметр SIZES[{k!r}] в settings.py, пропущен")
+            else:
+                sizes[k] = v
+    return sizes
 
 
 # ---------------------------------------------------------------- патч текста
-def apply_patches(s, C, Z, F):
+def apply_patches(s, Z):
     """Возвращает пропатченный текст main.js. При несовпадении кода завершает работу с ошибкой."""
 
     def rep(old, new, count=1):
@@ -158,51 +160,6 @@ def apply_patches(s, C, Z, F):
         '},[h.props&&h.props.plusminus,h.props&&h.props.step,null===(r=h.props)||void 0===r?void 0:r.actor,null===(n=h.props)||void 0===n?void 0:n.size,')
 
 
-    # ---------- 6. Цвета ----------
-    if C.get("primary"):
-        crep(r'primary:\{main:"%s"\}' % HEX, 'primary:{main:"%s"}' % C["primary"], 2)
-    if C.get("secondary"):
-        extra = ""
-        if C.get("secondary_dark"):
-            extra += ',dark:"%s"' % C["secondary_dark"]
-        if C.get("secondary_light"):
-            extra += ',light:"%s"' % C["secondary_light"]
-        sec = 'secondary:{main:"%s"%s}' % (C["secondary"], extra)
-        crep(r'secondary:[\w$]+\.A\}(?=,typography)', sec + '}')   # основная тема приложения
-        crep(r'secondary:[\w$]+\.A\}(?=\}\))', sec + '}')          # тема окна выбора диапазона графика
-    if C.get("appbar"):
-        crep(r'background:"%s",(?=transition:t\.transitions\.create)' % HEX, 'background:"%s",' % C["appbar"])
-    if C.get("page_bg"):
-        crep(r'body:\{backgroundColor:"%s"\}' % HEX, 'body:{backgroundColor:"%s"}' % C["page_bg"])
-    if C.get("paper"):
-        crep(r'backgroundImage:"unset",backgroundColor:"%s"' % HEX,
-             'backgroundImage:"unset",backgroundColor:"%s"' % C["paper"])
-    if C.get("card_bg"):
-        crep(r'backgroundColor:"%s"(?=,(?:padding:5,borderRadius:5|color:"#fff",borderRadius:5))' % HEX,
-             'backgroundColor:"%s"' % C["card_bg"], 3)
-    if C.get("progress_bar") or C.get("progress_bg"):
-        crep(r'("& \.MuiLinearProgress-bar":\{backgroundColor:")(%s)("\},backgroundColor:")(%s)(")' % (HEX, HEX),
-             lambda m: m[1] + (C.get("progress_bar") or m[2]) + m[3] + (C.get("progress_bg") or m[4]) + m[5], 5)
-    if C.get("chart_line"):
-        crep(r'\|\|"%s",width:2,shape:"spline"' % HEX, '||"%s",width:2,shape:"spline"' % C["chart_line"])
-        crep(r'\{name:"linecolor",default:"%s"' % HEX, '{name:"linecolor",default:"%s"' % C["chart_line"])
-
-    # ---------- 7. Шрифты ----------
-    def font(key):
-        v = F.get(key) or F.get("all")
-        if not v:
-            return None
-        if '"' in v or "\\" in v or "\n" in v:
-            sys.exit(f"ОШИБКА: в названии шрифта FONTS[{key!r}] нельзя использовать кавычки и обратную косую черту")
-        return v
-
-    if font("main"):   # основной шрифт интерфейса (тема MUI)
-        rep('fontFamily:["Advent Pro","monospace"].join(",")', 'fontFamily:"%s"' % font("main"))
-    if font("plot"):   # шрифт графиков (заголовок, легенда)
-        rep('family:"Advent Pro, sans-serif"', 'family:"%s"' % font("plot"), 6)
-    if font("mono"):   # шрифт карточек датчиков на дашборде
-        rep('fontFamily:"JetBrains Mono, monospace"', 'fontFamily:"%s"' % font("mono"))
-
     return MARK + "\n" + s
 
 
@@ -263,7 +220,7 @@ def io_guard(fn, *a):
 
 
 def cmd_apply(args):
-    C, Z, F = load_settings()
+    Z = load_settings()
     for p in targets(args):
         orig = p + ".orig"
         cur = read(p)
@@ -275,7 +232,7 @@ def cmd_apply(args):
         else:
             base = cur
             io_guard(shutil.copy2, p, orig)      # свежий оригинал (в т.ч. после переустановки пакета)
-        io_guard(write, p, apply_patches(base, C, Z, F))
+        io_guard(write, p, apply_patches(base, Z))
         gz = p + ".gz"
         print(f"Патч применён: {p}")
         if os.path.exists(gz):
