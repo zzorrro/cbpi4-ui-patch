@@ -126,7 +126,8 @@ def apply_patches(s, Z):
     rep('{name:"powerslider",options:["Power","Output","No"],default:"No",type:"select"}]},{name:"Led"',
         '{name:"powerslider",options:["Power","Output","No"],default:"No",type:"select"},'
         '{name:"plusminus",options:["yes","no"],default:"no",type:"select"},'
-        '{name:"step",default:"1",type:"number",unit:"%"}]},{name:"Led"')
+        '{name:"step",default:"1",type:"number",unit:"%"},'
+        '{name:"bgcolor",default:"",type:"text"}]},{name:"Led"')
     rep('[k,T]=(0,d.useState)("N/V");return(0,d.useMemo)(()=>{var e;let t={width:h.width',
         '[k,T]=(0,d.useState)("N/V"),'
         'PMR=(0,d.useRef)(null),PMT=(0,d.useRef)(null),'
@@ -148,17 +149,18 @@ def apply_patches(s, Z):
         'const i=Array.isArray(c)?c:[c];'
         'if(!q||!q.on)return z?i[0]:(0,s.jsxs)(Zt.A,{...r,children:i});'
         'return(0,s.jsxs)(Zt.A,{...r,children:[(0,s.jsx)(Xt.A,{key:"pmm",disabled:q.dis,...B(q.dec),color:"primary",'
-        'variant:"outlined",style:S,sx:A,children:"\\u2212"}),'
+        'variant:"outlined",style:S,sx:{...(q.bg||{}),...A},children:"\\u2212"}),'
         '...i,(0,s.jsx)(Xt.A,{key:"pmp",disabled:q.dis,...B(q.inc),color:"primary",'
-        'variant:"outlined",style:S,sx:A,children:"+"})]})},[]);'
+        'variant:"outlined",style:S,sx:{...(q.bg||{}),...A},children:"+"})]})},[]);'
         'return(0,d.useMemo)(()=>{var e;const PMP={on:"yes"===(h.props&&h.props.plusminus),dis:p||!f,'
-        'dec:()=>PMA(-1),inc:()=>PMA(1)};let t={width:h.width')
+        'dec:()=>PMA(-1),inc:()=>PMA(1),'
+        'bg:(c=>c&&!/^(no|none|transparent)$/i.test(c)?{backgroundColor:c,"&:hover":{backgroundColor:c}}:null)(String(h.props&&h.props.bgcolor||"").trim())};let t={width:h.width')
     # ---------- 1б. Кнопки молнии (Set Power) и трёх точек (Actions): узкие, как в оригинале ----------
     _w = '%s%%' % Z["side_button_width_pct"]
     _sb = 'style:{minWidth:0,width:"%s",flex:"0 0 %s",padding:0},' % (_w, _w)
     rep('onClick:L,color:"primary",startIcon:(0,s.jsx)(er,{}),size:"small",',
         'onClick:L,color:"primary",startIcon:(0,s.jsx)(er,{}),size:"small",' + _sb +
-        'sx:{"& .MuiButton-startIcon":{m:0},"& .MuiButton-startIcon > *":{fontSize:(+(h.props.size)||12)*%s+"px !important"}},' % Z["icon_size_ratio"], 2)
+        'sx:{...(PMP.bg||{}),"& .MuiButton-startIcon":{m:0},"& .MuiButton-startIcon > *":{fontSize:(+(h.props.size)||12)*%s+"px !important"}},' % Z["icon_size_ratio"], 2)
     _dots = '(0,s.jsx)(i.A,{title:"Actions",children:(0,s.jsx)(Xt.A,{disabled:p,onClick:E,color:"primary",size:"small",'
     if Z["hide_actions_button"]:
         # убираем кнопку с тремя точками целиком (null в списке детей ButtonGroup игнорируется)
@@ -166,14 +168,14 @@ def apply_patches(s, Z):
         if n != 3:
             fail(f"ожидалось 3 вхождений кнопки Actions, найдено {n}")
     else:
-        rep(_dots, _dots + _sb + 'sx:{"& svg":{fontSize:(+(h.props.size)||12)*%s+"px"}},' % Z["icon_size_ratio"], 3)
+        rep(_dots, _dots + _sb + 'sx:{...(PMP.bg||{}),"& svg":{fontSize:(+(h.props.size)||12)*%s+"px"}},' % Z["icon_size_ratio"], 3)
 
     rep('(0,s.jsx)("div",{style:t,children:(0,s.jsx)(Xt.A,{disabled:p,onClick:o,fullWidth:!0,variant:n,color:r,children:(0,s.jsxs)("div",{style:M(),children:[" ",l()," "]})})})',
-        '(0,s.jsx)("div",{style:t,children:(0,s.jsx)(GRP,{fullWidth:!0,bare:!0,pm:PMP,children:(0,s.jsx)(Xt.A,{disabled:p,onClick:o,fullWidth:!0,variant:n,color:r,children:(0,s.jsxs)("div",{style:M(),children:[" ",l()," "]})})})})')
+        '(0,s.jsx)("div",{style:t,children:(0,s.jsx)(GRP,{fullWidth:!0,bare:!0,pm:PMP,children:(0,s.jsx)(Xt.A,{disabled:p,onClick:o,fullWidth:!0,variant:n,color:r,sx:"outlined"===n&&PMP.bg?PMP.bg:void 0,children:(0,s.jsxs)("div",{style:M(),children:[" ",l()," "]})})})})')
     rep('(0,s.jsxs)("div",{style:t,children:[(0,s.jsx)(i.A,{title:f?f.name:"",children:(0,s.jsx)(Xt.A,{disabled:p,onClick:o,fullWidth:!0,variant:n,color:r,children:(0,s.jsxs)("div",{style:M(),children:[" ",l()," (",k,") "]})})}),(0,s.jsx)(Ar,',
-        '(0,s.jsxs)("div",{style:t,children:[(0,s.jsx)(GRP,{fullWidth:!0,bare:!0,pm:PMP,children:(0,s.jsx)(i.A,{title:f?f.name:"",children:(0,s.jsx)(Xt.A,{disabled:p,onClick:o,fullWidth:!0,variant:n,color:r,children:(0,s.jsxs)("div",{style:M(),children:[" ",l()," (",k,") "]})})})}),(0,s.jsx)(Ar,')
+        '(0,s.jsxs)("div",{style:t,children:[(0,s.jsx)(GRP,{fullWidth:!0,bare:!0,pm:PMP,children:(0,s.jsx)(i.A,{title:f?f.name:"",children:(0,s.jsx)(Xt.A,{disabled:p,onClick:o,fullWidth:!0,variant:n,color:r,sx:"outlined"===n&&PMP.bg?PMP.bg:void 0,children:(0,s.jsxs)("div",{style:M(),children:[" ",l()," (",k,") "]})})})}),(0,s.jsx)(Ar,')
     rep('},[null===(r=h.props)||void 0===r?void 0:r.actor,null===(n=h.props)||void 0===n?void 0:n.size,',
-        '},[h.props&&h.props.plusminus,h.props&&h.props.step,null===(r=h.props)||void 0===r?void 0:r.actor,null===(n=h.props)||void 0===n?void 0:n.size,')
+        '},[h.props&&h.props.plusminus,h.props&&h.props.step,h.props&&h.props.bgcolor,null===(r=h.props)||void 0===r?void 0:r.actor,null===(n=h.props)||void 0===n?void 0:n.size,')
 
 
     # ---------- 6. Окно этапа (открывается нажатием на этап в списке Steps) ----------
