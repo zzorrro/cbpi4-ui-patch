@@ -202,6 +202,16 @@ def apply_patches(s, Z):
         rep('variant:"contained",onClick:()=>{v.target_temp_%s(r.id,i),t()},color:"primary",autoFocus:!0,children:"Set"' % _fn,
             'variant:"contained",' + _BT + 'onClick:()=>{v.target_temp_%s(r.id,i),t()},color:"primary",autoFocus:!0,children:"Set"' % _fn)
 
+    # ---------- 5в. Окно очистки старых уведомлений (колокольчик в верхней панели) ----------
+    # Размеры задаются параметрами notif_dlg_* в settings.py.
+    _N = lambda k: Z["notif_dlg_" + k]
+    rep('(0,f.jsxs)(dt.A,{open:t,onClose:l,"aria-labelledby":"alert-dialog-title",',
+        '(0,f.jsxs)(dt.A,{open:t,onClose:l,fullWidth:!0,sx:{"& .MuiDialog-paper":{width:"min(%s,96vw)",maxWidth:"96vw"},'
+        '"& .MuiDialogTitle-root":{fontSize:"%s"},"& .MuiDialogContent-root *":{fontSize:"%s"},'
+        '"& .MuiDialogActions-root":{p:2},"& .MuiDialogActions-root .MuiButton-root":{fontSize:"%s",px:%s,py:%s,m:1}},'
+        '"aria-labelledby":"alert-dialog-title",'
+        % (px(_N("width_px")), rem(_N("title_rem")), rem(_N("text_rem")), rem(_N("btn_font_rem")), _N("btn_pad_x"), _N("btn_pad_y")))
+
     # ---------- 6. Окно этапа (открывается нажатием на этап в списке Steps) ----------
     # Окно этапов варки и этапов ферментера. Размеры меняются в settings.py (step_dlg_*).
     _sd = ('sx:{"& .MuiDialog-paper":{width:"min(%s,96vw)",maxWidth:"96vw"},'
