@@ -3,6 +3,7 @@
 #   curl -fsSL https://raw.githubusercontent.com/zzorrro/cbpi4-ui-patch/main/install.sh | sudo bash
 # Переменные окружения (необязательно):
 #   NO_APPLY=1      только установить, патч не применять
+#   WITH_THEME=1    дополнительно установить плагин цветов и шрифтов cbpi4-UITheme
 #   INSTALL_DIR     куда ставить (по умолчанию /opt/cbpi4-ui-patch)
 #   BASE_URL        откуда качать файлы
 set -e
@@ -38,4 +39,7 @@ echo "Настройки: sudo nano $INSTALL_DIR/settings.py"
 echo "Команды: sudo cbpi4-ui-patch apply | restore | status | uninstall"
 if [ -z "$NO_APPLY" ]; then
   "$BIN" apply
+fi
+if [ -n "$WITH_THEME" ]; then
+  curl -fsSL "${THEME_INSTALL_URL:-https://raw.githubusercontent.com/zzorrro/cbpi4_UITheme/main/install.sh}" | bash
 fi
