@@ -178,6 +178,30 @@ def apply_patches(s, Z):
         '},[h.props&&h.props.plusminus,h.props&&h.props.step,h.props&&h.props.bgcolor,null===(r=h.props)||void 0===r?void 0:r.actor,null===(n=h.props)||void 0===n?void 0:n.size,')
 
 
+    # ---------- 5б. Окно ручной уставки температуры (панели KettleControl и FermenterControl) ----------
+    # Размеры задаются параметрами temp_dlg_* в settings.py.
+    B = chr(92)   # обратная косая черта (в коде интерфейса: \xb0)
+    _D = lambda k: Z["temp_dlg_" + k]
+    rep('(0,s.jsxs)(et.A,{fullWidth:!0,onClose:y,"aria-labelledby":"simple-dialog-title",open:n,children:[(0,s.jsxs)(tt.A,{id:"simple-dialog-title",children:["Set Target Temp "',
+        '(0,s.jsxs)(et.A,{fullWidth:!0,sx:{"& .MuiDialog-paper":{width:"min(%s,96vw)",maxWidth:"96vw"}},onClose:y,"aria-labelledby":"simple-dialog-title",open:n,children:[(0,s.jsxs)(tt.A,{id:"simple-dialog-title",sx:{fontSize:"%s"},children:["Set Target Temp "'
+        % (px(_D("width_px")), rem(_D("title_rem"))), 2)
+    rep('variant:"h2",component:"h2",gutterBottom:!0,children:[i,"'+B+'xb0"]',
+        'variant:"h2",component:"h2",sx:{fontSize:"%s",lineHeight:1.2},gutterBottom:!0,children:[i,"%sxb0"]' % (rem(_D("value_rem")), B), 2)
+    _th = _D("slider_thick_px"); _tb = _D("slider_thumb_px")
+    _SL = ('sx:{mt:3,mb:6,mx:"%dpx",width:"calc(100%% - %dpx)",height:%d,'
+           '"& .MuiSlider-rail":{height:%d},"& .MuiSlider-track":{height:%d},'
+           '"& .MuiSlider-thumb":{width:%d,height:%d},'
+           '"& .MuiSlider-mark":{height:%d,width:3},'
+           '"& .MuiSlider-markLabel":{fontSize:"%s",top:%d}},'
+           % (_tb // 2, _tb, _th, _th, _th, _tb, _tb, _th, rem(_D("slider_marks_rem")), _tb - 8))
+    rep('Wt,{min:c,max:h,marks:f,step:1,value:i,', 'Wt,{' + _SL + 'min:c,max:h,marks:f,step:1,value:i,', 2)
+    _BT = 'size:"large",sx:{fontSize:"%s",m:2,px:%s,py:%s},' % (rem(_D("btn_font_rem")), _D("btn_pad_x"), _D("btn_pad_y"))
+    rep('variant:"contained",onClick:y,color:"secondary",autoFocus:!0,children:"Cancel"',
+        'variant:"contained",' + _BT + 'onClick:y,color:"secondary",autoFocus:!0,children:"Cancel"', 2)
+    for _fn in ("kettle", "fermenter"):
+        rep('variant:"contained",onClick:()=>{v.target_temp_%s(r.id,i),t()},color:"primary",autoFocus:!0,children:"Set"' % _fn,
+            'variant:"contained",' + _BT + 'onClick:()=>{v.target_temp_%s(r.id,i),t()},color:"primary",autoFocus:!0,children:"Set"' % _fn)
+
     # ---------- 6. Окно этапа (открывается нажатием на этап в списке Steps) ----------
     # Окно этапов варки и этапов ферментера. Размеры меняются в settings.py (step_dlg_*).
     _sd = ('sx:{"& .MuiDialog-paper":{width:"min(%s,96vw)",maxWidth:"96vw"},'

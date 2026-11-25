@@ -40,6 +40,17 @@ SIZES = {
     "power_btn_pad_x":        6,     # горизонтальные отступы внутри кнопок Cancel/Set (1 = 8px)
     "power_btn_pad_y":        2,     # вертикальные отступы внутри кнопок Cancel/Set (1 = 8px)
 
+    # ---- Окно ручной уставки температуры (открывается с панели KettleControl / FermenterControl) ----
+    "temp_dlg_width_px":     900,   # ширина окна, px (на узком экране автоматически уменьшится)
+    "temp_dlg_title_rem":    2.4,   # размер заголовка "Set Target Temp ..."
+    "temp_dlg_value_rem":    7,     # размер большого числа с градусами
+    "temp_dlg_slider_thick_px": 18, # толщина линии ползунка, px
+    "temp_dlg_slider_thumb_px": 56, # диаметр бегунка (круга, который тянут), px
+    "temp_dlg_slider_marks_rem": 1.5, # размер подписей 0° 20° 50° ...
+    "temp_dlg_btn_font_rem": 1.8,   # размер текста кнопок Cancel и Set
+    "temp_dlg_btn_pad_x":    6,     # горизонтальные отступы внутри кнопок Cancel/Set (1 = 8px)
+    "temp_dlg_btn_pad_y":    2,     # вертикальные отступы внутри кнопок Cancel/Set (1 = 8px)
+
     # ---- Окно этапа (открывается нажатием на этап в списке Steps слева; то же для этапов ферментера) ----
     "step_dlg_width_px":         900,   # ширина окна, px (на узком экране автоматически уменьшится)
     "step_dlg_title_rem":        2.4,   # размер заголовка (название этапа)
