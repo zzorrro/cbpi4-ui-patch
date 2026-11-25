@@ -16,8 +16,6 @@
     sudo cbpi4-ui-patch status     # состояние
     sudo cbpi4-ui-patch uninstall  # вернуть оригинал и удалить патч с системы
 
-Если файл не найден автоматически: `sudo cbpi4-ui-patch apply --file /путь/к/main.65b608fc.js`
-
 ## Настройки
 
     sudo nano /opt/cbpi4-ui-patch/settings.py
