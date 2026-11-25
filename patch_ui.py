@@ -207,6 +207,17 @@ def apply_patches(s, Z):
                '(0,s.jsx)(Xt.A,{onClick:()=>o(l),variant:"contained",color:"Primary"')
     rep(_ap_old, _ap_old.replace('fullWidth:!0,children:', 'fullWidth:!0,' + _sa + 'children:', 1), 2)
 
+    # ---------- 7. Фон основной кнопки Actor (свойство bgcolor) во всех вариантах элемента ----------
+    # Остальные варианты основной кнопки (с молнией, таймерный и т.п.), не затронутые заменами выше.
+    _bg = 'sx:"outlined"===n&&PMP.bg?PMP.bg:void 0,'
+    for _old in ('onClick:o,fullWidth:!0,variant:n,color:r,children:',
+                 'onClick:o,fullWidth:!0,variant:n,color:r,style:{borderRadius:"0px"},children:'):
+        _new = _old.replace('color:r,', 'color:r,' + _bg, 1)
+        _cnt = s.count(_old)
+        if _cnt == 0:
+            fail("не найдена основная кнопка Actor: " + _old)
+        s = s.replace(_old, _new)
+
     # ---------- 1в. Ширина блока не зависит от числа в скобках ----------
     # Если у элемента на дашборде не задана ширина (width), блок кнопок раньше сжимался
     # вместе с текстом. Невидимая "запасная" строка с самым длинным значением (100 %
