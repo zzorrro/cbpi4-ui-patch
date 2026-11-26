@@ -262,6 +262,16 @@ def apply_patches(s, Z):
             'style:{display:"block",height:0,overflow:"hidden",visibility:"hidden"},'
             'children:" "+l()+" ("+("Output"===v&&f?f.maxoutput+" / "+f.maxoutput:"100 %")+") "})]', 4)
 
+    # ---------- 8. Рабочая зона дашборда (ширина и высота) ----------
+    # Параметры dash_width_px, dash_height_px, dash_header_px в settings.py. В оригинале: ширина 100 %, высота 1000 px.
+    dw = Z["dash_width_px"]
+    dh = Z["dash_height_px"]
+    # Ширина не больше доступной на экране (окно минус поля страницы), иначе появляется горизонтальная прокрутка.
+    w_js = '"100%"' if not dw else "Math.min(%d,window.innerWidth-%d)" % (int(dw), int(Z["dash_side_margin_px"]))
+    h_js = ("Math.max(300,window.innerHeight-%d)" % int(Z["dash_header_px"])) if not dh else str(int(dh))
+    rep('(0,f.jsx)(It.xh,{width:"100%",height:1e3})', '(0,f.jsx)(It.xh,{width:%s,height:%s})' % (w_js, h_js))
+    rep('(0,f.jsx)(It.xh,{width:"100%",height:1e3,fixdash:e})', '(0,f.jsx)(It.xh,{width:%s,height:%s,fixdash:e})' % (w_js, h_js))
+
     return MARK + "\n" + s
 
 
