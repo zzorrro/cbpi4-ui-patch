@@ -267,7 +267,14 @@ def apply_patches(s, Z):
     dw = Z["dash_width_px"]
     dh = Z["dash_height_px"]
     # Ширина не больше доступной на экране (окно минус поля страницы), иначе появляется горизонтальная прокрутка.
-    w_js = '"100%"' if not dw else "Math.min(%d,window.innerWidth-%d)" % (int(dw), int(Z["dash_side_margin_px"]))
+    if dw:
+        w_js = "Math.min(%d,window.innerWidth-%d)" % (int(dw), int(Z["dash_side_margin_px"]))
+    elif int(Z.get("dash_snap_col_px", 0)) > 0:
+        # dash_width_px = 0: на компьютере и планшете ширина как в оригинале (100 %), на телефоне зона уже окна на поля страницы,
+        # чтобы колонки листались вбок с доводкой до края (dash_snap_col_px, dash_snap_max_window_px)
+        w_js = '(window.innerWidth>%d?"100%%":window.innerWidth-%d)' % (int(Z.get("dash_snap_max_window_px", 700)), int(Z["dash_side_margin_px"]))
+    else:
+        w_js = '"100%"'
     h_js = ("Math.max(300,window.innerHeight-%d)" % int(Z["dash_header_px"])) if not dh else str(int(dh))
     rep('(0,f.jsx)(It.xh,{width:"100%",height:1e3})', '(0,f.jsx)(It.xh,{width:%s,height:%s})' % (w_js, h_js))
     rep('(0,f.jsx)(It.xh,{width:"100%",height:1e3,fixdash:e})', '(0,f.jsx)(It.xh,{width:%s,height:%s,fixdash:e})' % (w_js, h_js))
