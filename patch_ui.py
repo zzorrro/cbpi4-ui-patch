@@ -272,7 +272,8 @@ def apply_patches(s, Z):
     elif int(Z.get("dash_snap_col_px", 0)) > 0:
         # dash_width_px = 0: на компьютере и планшете ширина как в оригинале (100 %), на телефоне зона уже окна на поля страницы,
         # чтобы колонки листались вбок с доводкой до края (dash_snap_col_px, dash_snap_max_window_px)
-        w_js = '(window.innerWidth>%d?"100%%":window.innerWidth-%d)' % (int(Z.get("dash_snap_max_window_px", 700)), int(Z["dash_side_margin_px"]))
+        # на телефоне поля страницы задаёт mobile_side_padding_px (слева и справа одинаково)
+        w_js = '(window.innerWidth>%d?"100%%":window.innerWidth-%d)' % (int(Z.get("dash_snap_max_window_px", 700)), 2 * int(Z.get("mobile_side_padding_px", 0)))
     else:
         w_js = '"100%"'
     h_js = ("Math.max(300,window.innerHeight-%d)" % int(Z["dash_header_px"])) if not dh else str(int(dh))
@@ -307,8 +308,8 @@ def apply_patches(s, Z):
             "(function(){try{var w=Math.min(screen.width,screen.height);"
             "if(w<=%d){var m=document.querySelector('meta[name=viewport]');"
             "if(!m){m=document.createElement('meta');m.name='viewport';document.head.appendChild(m)}"
-            "m.setAttribute('content','width=%d');var st=document.createElement('style');st.textContent='.MainMenu-title{min-width:0!important;overflow:hidden}.MainMenu-title h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}';document.head.appendChild(st)}}catch(e){}})();\n"
-        ) % (int(Z.get("mobile_viewport_max_px", 700)), vp) + s
+            "m.setAttribute('content','width=%d');var st=document.createElement('style');st.textContent='.CraftBeerPiApp-container{padding-left:%dpx!important;padding-right:%dpx!important}.MainMenu-title{min-width:0!important;overflow:hidden}.MainMenu-title h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}';document.head.appendChild(st)}}catch(e){}})();\n"
+        ) % (int(Z.get("mobile_viewport_max_px", 700)), vp, int(Z.get("mobile_side_padding_px", 0)), int(Z.get("mobile_side_padding_px", 0))) + s
 
     return MARK + "\n" + s
 
