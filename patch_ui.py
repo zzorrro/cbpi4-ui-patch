@@ -272,6 +272,24 @@ def apply_patches(s, Z):
     rep('(0,f.jsx)(It.xh,{width:"100%",height:1e3})', '(0,f.jsx)(It.xh,{width:%s,height:%s})' % (w_js, h_js))
     rep('(0,f.jsx)(It.xh,{width:"100%",height:1e3,fixdash:e})', '(0,f.jsx)(It.xh,{width:%s,height:%s,fixdash:e})' % (w_js, h_js))
 
+    # ---------- 9. Прокрутка дашборда с доводкой до края колонки ----------
+    # Если зона уже содержимого (телефон), после пролистывания вбок зона плавно доезжает до ближайшего
+    # края колонки шириной dash_snap_col_px. 0 = выключено. dash_snap_delay_ms: пауза после остановки пальца.
+    sc = int(Z.get("dash_snap_col_px", 0))
+    if sc > 0:
+        s += (
+            "\n;(function(){var C=%d,D=%d,M=%d,t=null,touching=!1;"
+            "function snap(el){if(touching||window.innerWidth>M||el.scrollWidth<=el.clientWidth+1)return;"
+            "var mx=el.scrollWidth-el.clientWidth,x=Math.min(mx,Math.round(el.scrollLeft/C)*C);"
+            "if(Math.abs(x-el.scrollLeft)>1)el.scrollTo({left:x,behavior:\"smooth\"});}"
+            "document.addEventListener(\"touchstart\",function(){touching=!0},{passive:!0,capture:!0});"
+            "document.addEventListener(\"touchend\",function(e){touching=!1;var el=document.querySelector(\".divnogrid\");"
+            "if(el){clearTimeout(t);t=setTimeout(function(){snap(el)},D)}},{passive:!0,capture:!0});"
+            "document.addEventListener(\"scroll\",function(e){var el=e.target;"
+            "if(!el||!el.classList||!el.classList.contains(\"divnogrid\"))return;"
+            "clearTimeout(t);t=setTimeout(function(){snap(el)},D)},!0);})();\n"
+        ) % (sc, int(Z.get("dash_snap_delay_ms", 120)), int(Z.get("dash_snap_max_window_px", 700)))
+
     return MARK + "\n" + s
 
 
