@@ -290,6 +290,19 @@ def apply_patches(s, Z):
             "clearTimeout(t);t=setTimeout(function(){snap(el)},D)},!0);})();\n"
         ) % (sc, int(Z.get("dash_snap_delay_ms", 120)), int(Z.get("dash_snap_max_window_px", 700)))
 
+    # ---------- 10. Масштаб страницы на телефоне ----------
+    # mobile_viewport_px > 0: на узком экране (ширина экрана не больше mobile_viewport_max_px) странице задаётся
+    # ширина в CSS-пикселях, браузер подгоняет её под экран. Пример: 358 = колонка 295 + поля страницы 63,
+    # тогда колонка занимает весь экран по ширине. Длинное название в шапке сокращается многоточием, чтобы страница не стала шире экрана. 0 = выключено. Код ставится в начало файла, до отрисовки.
+    vp = int(Z.get("mobile_viewport_px", 0))
+    if vp > 0:
+        s = (
+            "(function(){try{var w=Math.min(screen.width,screen.height);"
+            "if(w<=%d){var m=document.querySelector('meta[name=viewport]');"
+            "if(!m){m=document.createElement('meta');m.name='viewport';document.head.appendChild(m)}"
+            "m.setAttribute('content','width=%d');var st=document.createElement('style');st.textContent='.MainMenu-title{min-width:0!important;overflow:hidden}.MainMenu-title h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}';document.head.appendChild(st)}}catch(e){}})();\n"
+        ) % (int(Z.get("mobile_viewport_max_px", 700)), vp) + s
+
     return MARK + "\n" + s
 
 
