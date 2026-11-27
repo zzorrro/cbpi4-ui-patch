@@ -85,7 +85,7 @@ def apply_patches(s, Z):
           '"& .MuiSlider-thumb":{width:%d,height:%d},'
           '"& .MuiSlider-mark":{height:%d,width:3},'
           '"& .MuiSlider-markLabel":{fontSize:"%s",top:%d}},'
-          % (_tb // 2, _tb, _th, _th, _th, _tb, _tb, _th, rem(Z["power_slider_marks_rem"]), _tb - 8))
+          % (_tb // 2, _tb, _th, _th, _th, _tb, _tb, _th, rem(Z["power_slider_marks_rem"]), max(_tb - 8, 24)))
     rep('Wt,{min:l,max:u,marks:p,step:1,value:a,', 'Wt,{' + SL + 'min:l,max:u,marks:p,step:1,value:a,')
     rep('Wt,{min:v,max:x,marks:_,step:1,value:m,', 'Wt,{' + SL + 'min:v,max:x,marks:_,step:1,value:m,')
     BTN = 'size:"large",sx:{fontSize:"%s",m:2,px:%s,py:%s},' % (rem(Z["power_btn_font_rem"]), Z["power_btn_pad_x"], Z["power_btn_pad_y"])
@@ -193,7 +193,7 @@ def apply_patches(s, Z):
            '"& .MuiSlider-thumb":{width:%d,height:%d},'
            '"& .MuiSlider-mark":{height:%d,width:3},'
            '"& .MuiSlider-markLabel":{fontSize:"%s",top:%d}},'
-           % (_tb // 2, _tb, _th, _th, _th, _tb, _tb, _th, rem(_D("slider_marks_rem")), _tb - 8))
+           % (_tb // 2, _tb, _th, _th, _th, _tb, _tb, _th, rem(_D("slider_marks_rem")), max(_tb - 8, 24)))
     rep('Wt,{min:c,max:h,marks:f,step:1,value:i,', 'Wt,{' + _SL + 'min:c,max:h,marks:f,step:1,value:i,', 2)
     _BT = 'size:"large",sx:{fontSize:"%s",m:2,px:%s,py:%s},' % (rem(_D("btn_font_rem")), _D("btn_pad_x"), _D("btn_pad_y"))
     rep('variant:"contained",onClick:y,color:"secondary",autoFocus:!0,children:"Cancel"',
